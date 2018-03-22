@@ -62,16 +62,6 @@ public class PraeProzessor implements Preprocessor {
 	}
 	
 	/**
-	 * dummy.
-	 */
-	private String buffer = "";
-	
-	/**
-	 * dummy.
-	 */
-	private int state;
-	
-	/**
 	 * dummy javadoc.
 	 */
 	public PraeProzessor() {
@@ -85,10 +75,10 @@ public class PraeProzessor implements Preprocessor {
 	public Source process(Source unprocessed) throws LexicalError {
 		
 		final Source processed = new Source();
-		state = STATE.NORMAL.getState(); // resetting automat
-		buffer = "";
+		int state = STATE.NORMAL.getState(); // resetting automat
+		String buffer = "";
 		while(unprocessed.hasMore()) {
-			processed.append(processChar(unprocessed.getNextChar()));
+			state = processChar(processed, unprocessed.getNextChar(), state);
 		}
 		
 		if(state >= 2) {
@@ -103,20 +93,20 @@ public class PraeProzessor implements Preprocessor {
 	 * @param character dummy.
 	 * @return dummy.
 	 */
-	private String processChar(char character) {
+	private int processChar(Source processed, char character, int state) {
 		switch(state) {
 		case 0:
-			return processNormal(character);
+			return processNormal(processed, character);
 		case 1: 
-			return processComm(character);
+			return processComm(processed, character);
 		case 2:
-			return processCommLine(character);
+			return processCommLine(processed, character);
 		case 3:
-			return processCommBlock(character);
+			return processCommBlock(processed, character);
 		case 4:
-			return processCommBlockEnd(character);
+			return processCommBlockEnd(processed, character);
 		default:
-				return processNormal(character);
+				return processNormal(processed, character);
 		}
 	}
 	
@@ -125,14 +115,12 @@ public class PraeProzessor implements Preprocessor {
 	 * @param character dummy.
 	 * @return dummy.
 	 */
-	private String processNormal(char character) {
+	private int processNormal(Source processed, char character) {
 		if (character == '/') {
-			buffer += character;
-			state = STATE.COMM.getState();
-			return "";
+			return STATE.COMM.getState();
 		}
 		else {
-			return proceedNormal(character);
+			return proceedNormal(processed, character);
 		}
 		
 	}
@@ -142,19 +130,17 @@ public class PraeProzessor implements Preprocessor {
 	 * @param character dummy.
 	 * @return dummy.
 	 */
-	private String processComm(char character) {
+	private int processComm(Source processed, char character) {
 		if (character == '/') {
-			state = STATE.COMMLINE.getState();
+			return STATE.COMMLINE.getState();
 		}
 		else if(character == '*') {
-			state = STATE.COMMBLOCK.getState();
+			return STATE.COMMBLOCK.getState();
 		}
 		else {
-			state = STATE.NORMAL.getState();
-			return proceedNormal(character);
+			processed.append('/');
+			return proceedNormal(processed, character);
 		}
-		buffer = "";
-		return "";
 	}
 	
 	/**
@@ -162,13 +148,12 @@ public class PraeProzessor implements Preprocessor {
 	 * @param character dummy.
 	 * @return dummy.
 	 */
-	private String processCommLine(char character) {
+	private int processCommLine(Source processed, char character) {
 		if (character == '\n') {
-			state = STATE.NORMAL.getState();
-			return proceedNormal(character);
+			return STATE.NORMAL.getState();
 		}
 		else {
-			return "";
+			return STATE.COMMLINE.getState();
 		}
 	}
 	
@@ -177,17 +162,15 @@ public class PraeProzessor implements Preprocessor {
 	 * @param character dummy.
 	 * @return dummy.
 	 */
-	private String processCommBlock(char character) {
+	private int processCommBlock(Source processed, char character) {
 		if (character == '*') {
-			state = STATE.COMMBLOCKEND.getState();
-			return "";
+			return STATE.COMMBLOCKEND.getState();
 		}
 		else if (character == '\n') {
-			return proceedNormal(character);
+			processed.append(character);
 		}
-		else {
-			return "";
-		}
+		return STATE.COMMBLOCK.getState();
+		
 	}
 	
 	/**
@@ -195,24 +178,19 @@ public class PraeProzessor implements Preprocessor {
 	 * @param character dummy.
 	 * @return dummy.
 	 */
-	private String processCommBlockEnd(char character) {
+	private int processCommBlockEnd(Source processed, char character) {
 		if (character == '/') {
-			state = STATE.NORMAL.getState();
-			buffer = "";
-			return " ";
-		}
-		else if (character == '\n') {
-			state = STATE.COMMBLOCK.getState();
-			return proceedNormal(character);
+			processed.append(' ');
+			return STATE.NORMAL.getState();
 		}
 		else if(character == '*') {
-			state = STATE.COMMBLOCKEND.getState();
-			return "";
+			return STATE.COMMBLOCKEND.getState();
 		}
-		else {
-			state = STATE.COMMBLOCK.getState();
-			return "";
+		else if (character == '\n') {
+			processed.append(character);
 		}
+		return STATE.COMMBLOCK.getState();
+
 	}
 	
 	/**
@@ -220,10 +198,9 @@ public class PraeProzessor implements Preprocessor {
 	 * @param character dummy.
 	 * @return dummy.
 	 */
-	private String proceedNormal(char character) {
-		final String s = new String(buffer);
-		buffer = "";
-		return s + character;
+	private int proceedNormal(Source processed, char character) {
+		processed.append(character);
+		return STATE.NORMAL.getState();
 	}
 	
 
