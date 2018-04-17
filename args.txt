@@ -1,0 +1,4 @@
+edu.hm.cs.rs.compiler.toys.automata.Thompson
+edu.hm.cs.rs.compiler.toys.automata.NFA2DFA1
+edu.hm.cs.rs.compiler.toys.automata.DFAMinimizer1
+edu.hm.cs.rs.compiler.toys.automata.DFAExpander1

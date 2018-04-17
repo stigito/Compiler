@@ -1,0 +1,10 @@
+[a](ba)*(b)*
+[a](b|ba)*
+(c|((a|b)c*(a|b)c*(a|b)))*
+
+
+(a|bb(b)*)*[b]
+
+(a|ba)*[b(b|ba)*][b]
+
+aa*a|aa(a|b)*aa|ab(a|b)*ab|bb*b|ba(a|b)*ba|bb(a|b)*bb

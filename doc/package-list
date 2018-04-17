@@ -1,0 +1,6 @@
+edu.hm.cs.rs.compiler.toys.automata
+edu.hm.cs.rs.compiler.toys.base
+edu.hm.cs.rs.compiler.toys.compiler
+edu.hm.cs.rs.compiler.toys.compiler.example
+edu.hm.cs.rs.compiler.toys.format
+edu.hm.cs.rs.compiler.toys.grammar
