@@ -12,9 +12,10 @@ import edu.hm.cs.rs.compiler.lab04generator.LanguageGenerator;
 
 public class SprachGenerator implements LanguageGenerator {
 
-	private static final int MAXLENGTH = 9;
+	private static final int MAXLENGTH = 7;
 	
 	public static void main(String... args) {
+		double startMillis = System.currentTimeMillis();
 		System.setProperty("prettyprint", "blaBLABLAJDFKALNKL");
 		LanguageGenerator generator = new SprachGenerator();
 		//Stream grammar = generator.parseGrammar("=;S=();S=(S);S=()S;S=(S)S"); // 4
@@ -23,12 +24,15 @@ public class SprachGenerator implements LanguageGenerator {
 		Stream grammar = generator.parseGrammar("-,S-X,S-aB,S-Ba,S-BaB,S-XaB,S-BaX,X-a,X-c,X-aX,X-cX,B-ab,B-BB,B-XB,B-BX,B-aXb,B-aBb,B-ba,B-bXa,B-bBa,B-BXB,B-XBX"); // 9
 		grammar = LanguageGenerator.prettyprint(grammar);
 		
-		Stream sätze = generator.generate(grammar, MAXLENGTH);
-		printStringStream(sätze);
+		Stream saetze = generator.generate(grammar, MAXLENGTH);
+		printStringStream(saetze);
 
 		
 		grammar.close();
-		sätze.close();
+		saetze.close();
+		
+		
+		System.out.println("Time processed: " + ((System.currentTimeMillis() - startMillis)/1000) + " seconds");
 	}
 	private static void printStringStream(Stream<String> stream) {
 		
@@ -40,37 +44,33 @@ public class SprachGenerator implements LanguageGenerator {
 	@Override
 	public Stream<String> generate(Stream<String[]> grammar, int uptoLength) {
 		
-		int lastElementSize = 0;
 		List<String[]> grammatik = grammar.collect(Collectors.toList());
-		
 		List<String> ausdruecke = initStartProduction(grammatik.iterator());
 		List<String> newAusdruecke;
 		List<String> saetze = new ArrayList<String>();
 		
-		while(lastElementSize <= uptoLength) {
+		while(!ausdruecke.isEmpty()) {
 			newAusdruecke = new ArrayList<String> (ausdruecke);
-			for (String ausdruck : ausdruecke) {
-				if(ausdruck.equals(ausdruck.toLowerCase())) {
-					lastElementSize = ausdruck.length();
-					//check if already past limit
-					if(lastElementSize > uptoLength) {
-						break;
+			for (String ausdruck : newAusdruecke) {
+					if(ausdruck.equals(ausdruck.toLowerCase())) {
+						if(!saetze.contains(ausdruck)) {
+							saetze.add(ausdruck);
+						}
 					}
-					if(!saetze.contains(ausdruck)) {
-						saetze.add(ausdruck);
+					else {
+						doProductions(ausdruck, ausdruecke, grammatik, uptoLength);
 					}
-				}
-				else {
-					doProductions(ausdruck, newAusdruecke, grammatik);
-				}
-				newAusdruecke.remove(ausdruck);
+				ausdruecke.remove(ausdruck);
+
+
 			}
-			
-			ausdruecke = newAusdruecke;
 		}
-		
-		
-		saetze.sort(new Comparator<String>() {
+		sortList(saetze);
+		return saetze.stream();
+	}
+	
+	private void sortList(List<String> l) {
+		l.sort(new Comparator<String>() {
 			public int compare(String s1, String s2) {
 				if(s1.length() != s2.length()) {
 					return s1.length() - s2.length();
@@ -81,15 +81,13 @@ public class SprachGenerator implements LanguageGenerator {
 			}
 			
 		});
-		return saetze.stream();
 	}
 	
-	private void doProductions(String ausdruck, List<String> ausdruecke, List<String[]> grammatik) {
+	private void doProductions(String ausdruck, List<String> ausdruecke, List<String[]> grammatik, int uptoLength) {
 		String newAusdruck = ausdruck;
 		for(String[] s : grammatik) {
 			newAusdruck = ausdruck.replaceAll(s[0], s[1]);
-			
-			if(!newAusdruck.equals(ausdruck)) {
+			if(newAusdruck.length() <= uptoLength && !newAusdruck.equals(ausdruck)) {
 				ausdruecke.add(newAusdruck);
 			}
 		}
