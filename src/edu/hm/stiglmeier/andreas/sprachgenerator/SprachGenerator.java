@@ -10,21 +10,33 @@ import java.util.stream.Stream;
 
 import edu.hm.cs.rs.compiler.lab04generator.LanguageGenerator;
 
+/**
+ * languagegenerator.
+ * @author Stigi
+ *
+ */
 public class SprachGenerator implements LanguageGenerator {
 
-	private static final int MAXLENGTH = 7;
+	private static final int MAXLENGTH = 6;
 	
+	/**
+	 * main.
+	 * @param args arguments.
+	 */
 	public static void main(String... args) {
 		double startMillis = System.currentTimeMillis();
 		System.setProperty("prettyprint", "blaBLABLAJDFKALNKL");
 		LanguageGenerator generator = new SprachGenerator();
-		//Stream grammar = generator.parseGrammar("=;S=();S=(S);S=()S;S=(S)S"); // 4
-		//Stream grammar = generator.parseGrammar(":,P:,P:Q,Q:a,Q:b,Q:aa,Q:bb,Q:aQa,Q:bQb"); // 4
-		//Stream grammar = generator.parseGrammar(">/S>aSBc/S>aBc/cB>Bc/bB>Bb/aB>ab"); // 6
-		Stream grammar = generator.parseGrammar("-,S-X,S-aB,S-Ba,S-BaB,S-XaB,S-BaX,X-a,X-c,X-aX,X-cX,B-ab,B-BB,B-XB,B-BX,B-aXb,B-aBb,B-ba,B-bXa,B-bBa,B-BXB,B-XBX"); // 9
+		//Stream<String[]> grammar = generator.parseGrammar("=;S=();S=(S);S=()S;S=(S)S"); // 4
+		//Stream<String[]> grammar = generator.parseGrammar(":,P:,P:Q,Q:a,Q:b,Q:aa,Q:bb,Q:aQa,Q:bQb"); // 4
+		//Stream<String[]> grammar = generator.parseGrammar(">/S>aSBc/S>aBc/cB>Bc/bB>Bb/aB>ab"); // 6
+		Stream<String[]> grammar = generator.parseGrammar("-,S-X,S-aB,S-Ba,S-BaB,S-XaB,S-BaX,X-a,X-c,X-aX,X-cX,B-ab,B-BB,B-XB,B-BX,B-aXb,B-aBb,B-ba,B-bXa,B-bBa,B-BXB,B-XBX"); // 9
+		//Stream<String[]> grammar = generator.parseGrammar(":,P:,P:Q,Q:SQ,Q:S,S:pX;,S:i=X;,X:X+X,X:-X,X:(X),X:i,X:n");
+		//Stream<String[]> grammar = generator.parseGrammar("=;S=abcd;S=aSQ;cQd=Bccdd;dQ=Qd;bB=bb;cB=Bc");
+		//Stream<String[]> grammar = generator.parseGrammar("cdxSYcSYxzdSYcsYdxScxYzdYzczydYca");
 		grammar = LanguageGenerator.prettyprint(grammar);
 		
-		Stream saetze = generator.generate(grammar, MAXLENGTH);
+		Stream<String> saetze = generator.generate(grammar, MAXLENGTH);
 		printStringStream(saetze);
 
 		
@@ -32,11 +44,11 @@ public class SprachGenerator implements LanguageGenerator {
 		saetze.close();
 		
 		
-		System.out.println("Time processed: " + ((System.currentTimeMillis() - startMillis)/1000) + " seconds");
-	}
+		System.out.println("Time processed: " + ((System.currentTimeMillis() - startMillis) / 1000) + " seconds");
+	} 
 	private static void printStringStream(Stream<String> stream) {
 		
-		for(Object s : stream.toArray()) {
+		for (Object s : stream.toArray()) {
 			System.out.println(s);
 		}
 	}
@@ -45,25 +57,30 @@ public class SprachGenerator implements LanguageGenerator {
 	public Stream<String> generate(Stream<String[]> grammar, int uptoLength) {
 		
 		List<String[]> grammatik = grammar.collect(Collectors.toList());
-		List<String> ausdruecke = initStartProduction(grammatik.iterator());
-		List<String> newAusdruecke;
+		List<String> ausdruecke = initStartProduction(grammatik);
 		List<String> saetze = new ArrayList<String>();
 		
-		while(!ausdruecke.isEmpty()) {
-			newAusdruecke = new ArrayList<String> (ausdruecke);
-			for (String ausdruck : newAusdruecke) {
-					if(ausdruck.equals(ausdruck.toLowerCase())) {
-						if(!saetze.contains(ausdruck)) {
+		int oldLength = 0;
+		int length = ausdruecke.size();
+		String ausdruck;
+		while (oldLength < length) {
+			//System.out.println("next round. old length: " + oldLength + ", new Length: " + length);
+			for (int i = oldLength; i < length; i++) {
+					ausdruck = ausdruecke.get(i);
+					if (ausdruck.equals(ausdruck.toLowerCase())) {
 							saetze.add(ausdruck);
-						}
 					}
 					else {
 						doProductions(ausdruck, ausdruecke, grammatik, uptoLength);
 					}
-				ausdruecke.remove(ausdruck);
-
-
 			}
+			
+
+			oldLength = length;
+			length = ausdruecke.size();
+			
+			
+			
 		}
 		sortList(saetze);
 		return saetze.stream();
@@ -72,7 +89,7 @@ public class SprachGenerator implements LanguageGenerator {
 	private void sortList(List<String> l) {
 		l.sort(new Comparator<String>() {
 			public int compare(String s1, String s2) {
-				if(s1.length() != s2.length()) {
+				if (s1.length() != s2.length()) {
 					return s1.length() - s2.length();
 				}
 				else {
@@ -85,35 +102,18 @@ public class SprachGenerator implements LanguageGenerator {
 	
 	private void doProductions(String ausdruck, List<String> ausdruecke, List<String[]> grammatik, int uptoLength) {
 		String newAusdruck = ausdruck;
-		for(String[] s : grammatik) {
-			newAusdruck = ausdruck.replaceAll(s[0], s[1]);
-			if(newAusdruck.length() <= uptoLength && !newAusdruck.equals(ausdruck)) {
+		for (String[] s : grammatik) {
+			newAusdruck = ausdruck.replaceFirst(s[0], s[1]);
+			if (newAusdruck.length() <= uptoLength && !ausdruecke.contains(newAusdruck)) {
 				ausdruecke.add(newAusdruck);
 			}
 		}
 		
 	}
 	
-	private List<String> initStartProduction(Iterator<String[]> grammatik) {
+	private List<String> initStartProduction(List<String[]> grammatik) {
 		List<String> list = new ArrayList<String>();
-		String startVariable = "";
-		String[] rule;
-		
-		while(grammatik.hasNext()) {
-			rule = grammatik.next();
-			
-			if(startVariable.equals("")) {
-				startVariable = rule[0];
-			}
-			
-			if(rule[0].equals(startVariable)) {
-					list.add(rule[1]);
-				
-			}
-			
-			
-		}
-		
+		list.add(grammatik.get(0)[0]);
 		return list;
 	}
 	
@@ -132,8 +132,8 @@ public class SprachGenerator implements LanguageGenerator {
 		String sideSplitter = grammarString.substring(0, 1);
 		String productionSplitter = grammarString.substring(1, 2);
 		return Stream.of(grammarString.split(productionSplitter)).skip(1).map(productionString -> {
-			if(productionString.indexOf(sideSplitter) == productionString.length()-1) {
-				return new String[] {productionString.substring(0, productionString.length()-1), ""};
+			if (productionString.indexOf(sideSplitter) == productionString.length() - 1) {
+				return new String[] {productionString.substring(0, productionString.length() - 1), ""};
 			}
 			else {
 				return productionString.split(sideSplitter);
