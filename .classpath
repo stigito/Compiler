@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/Stigi/OneDrive/Hochschule_Muenchen/4.Semester/Compiler/Praktikum/Compiler/compilertoys.jar"/>
+	<classpathentry kind="lib" path="//nas.ads.mwn.de/hm-astiglme/Benutzer/Dokumente/Github/Compiler/compilertoys.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

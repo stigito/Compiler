@@ -17,7 +17,7 @@ import edu.hm.cs.rs.compiler.lab04generator.LanguageGenerator;
  */
 public class SprachGenerator implements LanguageGenerator {
 
-	private static final int MAXLENGTH = 6;
+	private static final int MAXLENGTH = 5;
 	
 	/**
 	 * main.
@@ -30,10 +30,11 @@ public class SprachGenerator implements LanguageGenerator {
 		//Stream<String[]> grammar = generator.parseGrammar("=;S=();S=(S);S=()S;S=(S)S"); // 4
 		//Stream<String[]> grammar = generator.parseGrammar(":,P:,P:Q,Q:a,Q:b,Q:aa,Q:bb,Q:aQa,Q:bQb"); // 4
 		//Stream<String[]> grammar = generator.parseGrammar(">/S>aSBc/S>aBc/cB>Bc/bB>Bb/aB>ab"); // 6
-		Stream<String[]> grammar = generator.parseGrammar("-,S-X,S-aB,S-Ba,S-BaB,S-XaB,S-BaX,X-a,X-c,X-aX,X-cX,B-ab,B-BB,B-XB,B-BX,B-aXb,B-aBb,B-ba,B-bXa,B-bBa,B-BXB,B-XBX"); // 9
+		//Stream<String[]> grammar = generator.parseGrammar("-,S-X,S-aB,S-Ba,S-BaB,S-XaB,S-BaX,X-a,X-c,X-aX,X-cX,B-ab,B-BB,B-XB,B-BX,B-aXb,B-aBb,B-ba,B-bXa,B-bBa,B-BXB,B-XBX"); // 9
 		//Stream<String[]> grammar = generator.parseGrammar(":,P:,P:Q,Q:SQ,Q:S,S:pX;,S:i=X;,X:X+X,X:-X,X:(X),X:i,X:n");
 		//Stream<String[]> grammar = generator.parseGrammar("=;S=abcd;S=aSQ;cQd=Bccdd;dQ=Qd;bB=bb;cB=Bc");
 		//Stream<String[]> grammar = generator.parseGrammar("cdxSYcSYxzdSYcsYdxScxYzdYzczydYca");
+		Stream<String[]> grammar = generator.parseGrammar("=,S=a,S=c,S=Q,Q=a,Q=c,Q=QQ,Q=T,T=aQb,T=bQa");
 		grammar = LanguageGenerator.prettyprint(grammar);
 		
 		Stream<String> saetze = generator.generate(grammar, MAXLENGTH);

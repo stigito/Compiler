@@ -1,0 +1,6 @@
+=,B=C,C=c,B=D,D=d,B=E,E=e,B=F,F=f,B=G,G=g,B=H,H=h,B=I,I=i,B=J,J=j,B=K,K=k,B=L,L=l,B=M,M=m,B=N,N=n,B=O,O=o,B=P,P=p,B=Q,Q=q,B=R,R=r,B=S,S=s,B=T,T=t,B=U,U=u,B=V,V=v,B=W,W=w,B=X,X=x,B=Y,Y=y,B=Z,Z=z
+=,D=a,D=bD,D=cD,D=dD,D=eD,D=fD,D=gD,D=hD,D=iD,D=jD,D=kD,D=lD,D=mD,D=nD,D=oD,D=pD,D=qD,D=rD,D=sD,D=tD,D=uD,D=vD,D=wD,D=xD,D=yD,D=zD
+=,E=a,E=FE,F=f,E=GE,G=g,E=HE,H=h,E=IE,I=i,E=JE,J=j,E=KE,K=k,E=LE,L=l,E=ME,M=m,E=NE,N=n,E=OE,O=o,E=PE,P=p,E=QE,Q=q,E=RE,R=r,E=SE,S=s,E=TE,T=t,E=UE,U=u,E=VE,V=v,E=WE,W=w,E=XE,X=x,E=YE,Y=y,E=ZE,Z=z
+=,G=gG,G=H,H=hH,H=I,I=iI,I=J,J=jJ,J=K,K=kK,K=L,L=lL,L=M,M=mM,M=N,N=nN,N=O,O=oO,O=P,P=pP,P=Q,Q=qQ,Q=R,R=rR,R=S,S=sS,S=T,T=tT,T=U,U=uU,U=V,V=vV,V=W,W=wW,W=X,X=xX,X=Y,Y=yY,Y=Z,Z=z
+=,A=B,B=C,C=D,D=E,E=F,F=G,G=H,H=I,I=J,J=K,K=L,L=M,M=N,N=O,O=P,P=Q,Q=R,R=S,S=T,T=U,U=V,V=W,W=X,X=Y,Y=Z,Z=z
+=,C=D,D=E,E=F,F=G,G=H,H=I,I=J,J=K,K=L,L=M,M=N,N=O,O=P,P=Q,Q=R,R=S,S=T,T=U,U=V,V=W,W=X,X=Y,Y=Z,Z=a,Z=b,Z=c,Z=d,Z=e,Z=f,Z=g,Z=h,Z=i,Z=j,Z=k,Z=l,Z=m,Z=n,Z=o,Z=p,Z=q,Z=r,Z=s,Z=t,Z=u,Z=v,Z=w,Z=x,Z=y,Z=z
