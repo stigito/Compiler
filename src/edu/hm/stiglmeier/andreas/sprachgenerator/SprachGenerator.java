@@ -17,7 +17,7 @@ import edu.hm.cs.rs.compiler.lab04generator.LanguageGenerator;
  */
 public class SprachGenerator implements LanguageGenerator {
 
-	private static final int MAXLENGTH = 5;
+	private static final int MAXLENGTH = 6;
 	
 	/**
 	 * main.
@@ -34,7 +34,7 @@ public class SprachGenerator implements LanguageGenerator {
 		//Stream<String[]> grammar = generator.parseGrammar(":,P:,P:Q,Q:SQ,Q:S,S:pX;,S:i=X;,X:X+X,X:-X,X:(X),X:i,X:n");
 		//Stream<String[]> grammar = generator.parseGrammar("=;S=abcd;S=aSQ;cQd=Bccdd;dQ=Qd;bB=bb;cB=Bc");
 		//Stream<String[]> grammar = generator.parseGrammar("cdxSYcSYxzdSYcsYdxScxYzdYzczydYca");
-		Stream<String[]> grammar = generator.parseGrammar("=,S=a,S=c,S=Q,Q=a,Q=c,Q=QQ,Q=T,T=aQb,T=bQa");
+		Stream<String[]> grammar = generator.parseGrammar("=,S=[S],S=(S),S=SS,S=x,S=K*,S=S+S,S=S\\S,S=S|S,K=x,K=[S],K=(S)");
 		grammar = LanguageGenerator.prettyprint(grammar);
 		
 		Stream<String> saetze = generator.generate(grammar, MAXLENGTH);
@@ -104,7 +104,13 @@ public class SprachGenerator implements LanguageGenerator {
 	private void doProductions(String ausdruck, List<String> ausdruecke, List<String[]> grammatik, int uptoLength) {
 		String newAusdruck = ausdruck;
 		for (String[] s : grammatik) {
+			try {
 			newAusdruck = ausdruck.replaceFirst(s[0], s[1]);
+			}
+			catch (java.lang.IllegalArgumentException e) {
+				System.out.println(ausdruck + ", " + s[0] + ", " + s[1] + " -> error");
+				throw e;
+			}
 			if (newAusdruck.length() <= uptoLength && !ausdruecke.contains(newAusdruck)) {
 				ausdruecke.add(newAusdruck);
 			}

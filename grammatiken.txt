@@ -1,3 +1,6 @@
-1.	=,S=A,S=B,A=a,B=b,B=bA,B=bB,A=aC,A=aA,C=b,C=bB
-2.	=,S=P,Q=a,Q=b,P=QPQ,P=a
-3.	=,S=a,S=c,S=Q,Q=a,Q=c,Q=QQ,Q=T,T=aQb,T=bQa noch nicht fertig
+=,S=A,S=B,A=a,B=b,B=bA,B=bB,A=aC,A=aA,C=b,C=bB
+=,S=P,Q=a,Q=b,P=QPQ,P=a
+=,S=X,X=A,X=BAX,X=BXA,X=XBA,X=XAB,X=AXB,X=ABX,A=a,A=aA,A=AC,A=CA,B=b,B=bC,B=Cb,C=c,C=cC
+=,S=[S],S=(S),S=SS,S=x,S=K*,S=S+S,S=S\\S,S=S|S,K=x,K=[S],K=(S)
+_,S_LIR.,I_=,I_LIR,I_IR,L_n,R_n,R_t
+=,S=,S=X,S=YX,Y=aA,Y=bB,Y=YaA,Y=YbB,Aa=aA,Ab=bA,AX=Xa,AX=a,Ba=aB,Bb=bB,BX=Xb,BX=b
