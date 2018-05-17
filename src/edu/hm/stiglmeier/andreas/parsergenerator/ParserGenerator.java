@@ -36,15 +36,17 @@ public class ParserGenerator implements RDParserGenerator {
 		parserCode += addClassUpperBody(startChar);
 		parserCode += "private " + this.getSyntaxErrorExceptionSourcecode() + "\n";
 		parserCode += "private " + this.getNodeSourcecode() + "\n";
-		parserCode += addParserMain() + "\n";
+		parserCode += addParserMain(startChar) + "\n";
 		parserCode += addDefaultConstructor(startChar) + "\n";
 		parserCode += addGenerateMethodUpperBody() + "\n";
-		
-		//here is the magic
-		parserCode += addGenerateMethodContent(firstMenge);
-		//magic end
-		
+		parserCode += addGenerateMethodContent(startChar);
 		parserCode += addGenerateMethodLowerBody() + "\n";
+		
+		parserCode += addChildsMethodUpperBody() + "\n";
+		parserCode += generateRekursiveChilds(firstMenge);
+		parserCode += addChildsMethodLowerBody() + "\n";
+		
+		
 		parserCode += addClassLowerBody();
 		return parserCode;
 	}
@@ -94,12 +96,20 @@ public class ParserGenerator implements RDParserGenerator {
 		return "}\n";
 	}
 	
-	private String addParserMain() {
+	private String addChildsMethodUpperBody() {
+		return "private String createChilds(Node node, String input) throws SyntaxErrorException {";
+	}
+	
+	private String addChildsMethodLowerBody() {
+		return "}\n";
+	}
+	
+	private String addParserMain(char startSymbol) {
 		
 		return "public static void main(String... args) throws SyntaxErrorException {\n"
-				+ "Node parseTree = new RDParserS().parse(args[0]);\n" 
-				+ "System.out.println(parseTree);  // Parsebaum in einer Zeile\n"
-				+ "parseTree.prettyPrint();        // Parsebaum gekippt, mehrzeilig\n"
+				+ "\tNode parseTree = new RDParser" + startSymbol + "().parse(args[0]);\n" 
+				+ "\tSystem.out.println(parseTree);  // Parsebaum in einer Zeile\n"
+				+ "\tparseTree.prettyPrint();        // Parsebaum gekippt, mehrzeilig\n"
 				+ "}\n";
 	}
 	
@@ -107,9 +117,103 @@ public class ParserGenerator implements RDParserGenerator {
 // from here on it is the generating of the generate logic
 //********************************************************************
 	
-	private String addGenerateMethodContent(Map<Character, Map<String, List<Character>>> firstMenge) {
+	private String addGenerateMethodContent(char startChar) {
 		
-		return "";
 		
+		String content = "\tNode startNode = new Node(\"" + startChar + "\");\n";
+		content += "\tcreateChilds(startNode, input);\n";
+		content += "\treturn startNode;\n";
+		
+		return content;
+		
+	}
+	
+	private String generateRekursiveChilds(Map<Character, Map<String, List<Character>>> firstMenge) {
+		
+		String content = "\tif(node.name.toLowerCase().equals(node.name)) {\n";
+		content += "\t\tif(input.startsWith(node.name)) {\n";
+		content += "\t\t\treturn input.substring(1);\n";	
+		content += "\t\t}\n";		
+		content += "\t\telse {\n";	
+		content += "\t\t\tthrow new SyntaxErrorException(\"Expected (one of) \" + node.name + \", but was \" + input.substring(0, 1));\n";	
+		content += "\t\t}\n";		
+		content += "\t}\n\n";
+		
+		content += generateSourceSymbolLogik(firstMenge);
+		
+		content += "\tString newInput = input;\n";
+		content += "\tfor(Node n : node) {\n";
+		content += "\t\tnewInput = createChilds(n, newInput);\n";
+		content += "\t}\n";	
+		content += "\treturn newInput;\n";
+		return content;
+	}
+	
+	private String generateSourceSymbolLogik(Map<Character, Map<String, List<Character>>> firstMenge) {
+		
+		String content = "";
+		
+		String ifClauseNONT = "if";
+		boolean isIFClauseNONT = false;
+		
+		for (char c : firstMenge.keySet()) {
+			content += "\t" + ifClauseNONT + "(node.name.equals(\"" + c + "\")) {\n";
+			content += generateProjectionLogic(firstMenge.get(c));
+			content += "\t}\n";
+			
+			if (!isIFClauseNONT) {
+				ifClauseNONT = "else if";
+				isIFClauseNONT = true;
+			}
+		}
+		return content + "\n";
+	}
+	
+	private String generateProjectionLogic(Map<String, List<Character>> projections) {
+		String content = "";
+		String ifClause = "if";
+		boolean isIFClause = false;
+		
+		for (String s : projections.keySet()) {
+			content += "\t\t" + ifClause + "(" + getStartsWithFirstSymbols(projections.get(s)) + ") {\n";
+			for (char c : s.toCharArray()) {
+				content += "\t\t\tnode.add(new Node(\"" + c + "\"));\n";
+			}
+			content += "\t\t}\n";
+			if (!isIFClause) {
+				ifClause = "else if";
+				isIFClause = true;
+			}
+		}
+		content += "\t\telse { throw new SyntaxErrorException(\"Expected (one of) \"" + listToString(projections) + " + \" but was \" + input.substring(0, 1));}\n";
+		
+		return content;
+	}
+	
+	private String getStartsWithFirstSymbols(List<Character> chars) {
+		String content = "";
+		String addOr = "";
+		boolean isOr = false;
+		
+		for (char c : chars) {
+			content += addOr + "input.startsWith(\"" + c + "\")";
+			
+			if (!isOr) {
+				addOr = " || ";
+				isOr = true;
+			}
+		}
+		return content;
+	}
+	
+	private String listToString(Map<String, List<Character>> projections) {
+		String content = "";
+		
+		for (String s : projections.keySet()) {
+			for (char c : projections.get(s)) {
+				content += " + \"" + c + ",\""; 
+			}
+		}
+		return content;
 	}
 }
