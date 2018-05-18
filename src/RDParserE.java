@@ -37,7 +37,10 @@ public RDParserE() {}
 public Node parse(String input) throws SyntaxErrorException {
 
 	Node startNode = new Node("E");
-	createChilds(startNode, input);
+	String newInput = createChilds(startNode, input);
+	if(newInput.length() > 0) {
+		throw new SyntaxErrorException("Expected nothing, but was " + newInput);
+	};
 	return startNode;
 }
 

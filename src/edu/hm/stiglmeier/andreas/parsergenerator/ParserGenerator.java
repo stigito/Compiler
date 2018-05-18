@@ -14,7 +14,7 @@ import edu.hm.cs.rs.compiler.lab06rdparsergenerator.RDParserGenerator;
  */
 public class ParserGenerator implements RDParserGenerator {
 
-	private static final String GRAMMAR = "=,E=(EOE),E=F,O=+,O=-,F=n,F=-E";
+	//private static final String GRAMMAR = "=,E=(EOE),E=F,O=+,O=-,F=n,F=-E";
 	private static final String IMPORT_UTIL = "import java.util.*;\n";
 	private static final String CLASS_BODY = "public class RDParser";
 	
@@ -23,7 +23,7 @@ public class ParserGenerator implements RDParserGenerator {
 	 * @param args : args.
 	 */
 	public static void main(final String... args) {
-	    System.out.println(new ParserGenerator().generate(GRAMMAR));
+	    System.out.println(new ParserGenerator().generate(args[0]));
 	}
 
 	@Override
@@ -48,7 +48,9 @@ public class ParserGenerator implements RDParserGenerator {
 		
 		
 		parserCode += addClassLowerBody();
-		return parserCode;
+		StringBuffer s = new StringBuffer(parserCode);
+		
+		return parserCode.replaceAll("\\u0000", "");
 	}
 	
 	
@@ -121,7 +123,10 @@ public class ParserGenerator implements RDParserGenerator {
 		
 		
 		String content = "\tNode startNode = new Node(\"" + startChar + "\");\n";
-		content += "\tcreateChilds(startNode, input);\n";
+		content += "\tString newInput = createChilds(startNode, input);\n";
+		content += "\tif(newInput.length() > 0) {\n";
+		content += "\t\tthrow new SyntaxErrorException(\"Expected nothing, but was \" + newInput);\n";
+		content += "\t}\n";
 		content += "\treturn startNode;\n";
 		
 		return content;
