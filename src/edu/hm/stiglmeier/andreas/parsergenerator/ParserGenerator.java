@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import edu.hm.cs.rs.compiler.lab06rdparsergenerator.RDParserGenerator;
 /**
- * Generator Klasse eines Parser-Sourcecodes für die gegebene Grammatik. 
+ * Generator Klasse eines Parser-Sourcecodes fuer die gegebene Grammatik. 
  * @author Stigi
  *
  */
@@ -48,9 +48,8 @@ public class ParserGenerator implements RDParserGenerator {
 		
 		
 		parserCode += addClassLowerBody();
-		StringBuffer s = new StringBuffer(parserCode);
 		
-		return parserCode.replaceAll("\\u0000", "");
+		return parserCode;
 	}
 	
 	
