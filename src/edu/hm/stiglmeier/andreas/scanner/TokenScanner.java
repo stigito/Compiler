@@ -52,6 +52,10 @@ public class TokenScanner extends  BaseScanner {
 		private static final String STATE_SEMICOLON = "semicolon";
 		private static final String STATE_LETTER = "identifier";
 		private static final String STATE_IGNORE = "ignore";
+		
+		//Erweiterung um "**" Token
+		
+		private static final String STATE_POT = "pot";
 	
 	
 	/**
@@ -115,6 +119,10 @@ public class TokenScanner extends  BaseScanner {
 			transition(STATE_PRI, LETTER.replace(PRINT_N, EMPTY), STATE_LETTER);
 			transition(STATE_PRIN, LETTER.replace(PRINT_T, EMPTY), STATE_LETTER);
 			transition(STATE_PRINT, LETTER, STATE_LETTER);
+			
+			//Erweiterung um potenz "**"
+			transition(STATE_MUL, MUL, STATE_POT);
+			accept(STATE_POT);
 			
 			
 		}
