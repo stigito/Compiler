@@ -1,6 +1,6 @@
 package edu.hm.stiglmeier.andreas.tabellenparser;
 
-import edu.hm.cs.rs.compiler.toys.base.LL1TableParser;;
+import edu.hm.cs.rs.compiler.toys.base.LL1TableParser;
 
 public class TableParser extends LL1TableParser {
 
